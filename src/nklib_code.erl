@@ -63,7 +63,7 @@ getter(Fun, Value) ->
            erl_syntax:atom(Fun),
            [erl_syntax:clause([], none, [erl_syntax:abstract(Value)])])
     catch
-        error:Error -> lager:warning("Could not make getter for ~p", [Value]),
+        error:Error -> lager:log(warning, self(), "Could not make getter for ~p", [Value]),
         error(Error)
     end.
 
@@ -97,7 +97,7 @@ getter_args(Fun, Arity, ArgsValues, Default) ->
                     ]
             end)
     catch
-        error:Error -> lager:warning("Could not make getter for ~p", [ArgsValues]),
+        error:Error -> lager:log(warning, self(), "Could not make getter for ~p", [ArgsValues]),
             error(Error)
     end.
 

@@ -50,10 +50,10 @@ encode(Term) ->
     end,
     case nklib_util:do_try(Fun) of
         {exception, {error, {Error, Trace}}} ->
-            lager:debug("Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_encode_error, Error});
         {exception, {throw, {Error, Trace}}} ->
-            lager:debug("Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_encode_error, Error});
         Other ->
             Other
@@ -78,10 +78,10 @@ encode_pretty(Term) ->
     end,
     case nklib_util:do_try(Fun) of
         {exception, {error, {Error, Trace}}} ->
-            lager:debug("Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_encode_error, Error});
         {exception, {throw, {Error, Trace}}} ->
-            lager:debug("Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error encoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_encode_error, Error});
         Other ->
             Other
@@ -130,10 +130,10 @@ decode(Term) ->
     end,
     case nklib_util:do_try(Fun) of
         {exception, {error, {Error, Trace}}} ->
-            lager:debug("Error decoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error decoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_decode_error, Error});
         {exception, {throw, {Error, Trace}}} ->
-            lager:debug("Error decoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
+            lager:log(debug, self(), "Error decoding JSON: ~p (~p) (~p)", [Error, Term, Trace]),
             error({json_decode_error, Error});
         Other ->
             Other

@@ -168,38 +168,41 @@ handle_call(get_state, _From, State) ->
     {reply, State, State};
 
 handle_call(Msg, _From, State) ->
-    lager:error("Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    %lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
 %% @private
 -spec handle_cast(term(), #state{}) ->
-    {noreply, #state{}} | {stop, term(), #state{}}.
+          {noreply, #state{}} | {stop, term(), #state{}}.
 
 handle_cast({message, Msg}, #state{id=Id, backend=Backend, substate=Sub}=State) -> 
     case Backend:message(Id, Msg, Sub) of
         {ok, Sub2} ->
             {noreply, State#state{substate=Sub2}};
         {error, Error} ->
-            % Lager could block if we are processing a lager message...
+                                                % Lager could block if we are processing a lager message...
             io:format("nklib_log (~p): could not send msg: ~p\n", [Id, Error]),
             {noreply, State}
     end;
 
 handle_cast(stop, State) -> 
     {stop, normal, State};
-    
+
 handle_cast(Msg, State) -> 
-    lager:error("Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    %lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
 %% @private
 -spec handle_info(term(), #state{}) ->
-    {noreply, #state{}} | {stop, term(), #state{}}.
+          {noreply, #state{}} | {stop, term(), #state{}}.
 
 handle_info(Info, State) -> 
-    lager:warning("Module ~p received unexpected info: ~p (~p)", [?MODULE, Info, State]),
+    %lager:log(warning, self(), "Module ~p received unexpected info: ~p (~p)", [?MODULE, Info, State]),
+    lager:log(warning, self(), "Module ~p received unexpected info: ~p (~p)", [?MODULE, Info, State]),
     {noreply, State}.
 
 

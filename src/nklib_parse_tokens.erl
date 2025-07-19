@@ -55,7 +55,7 @@ tokens(_) ->
 tokens(String, Acc) ->
     case name(strip(String), []) of
         {error, _Type, _Line} -> 
-            % lager:debug("Error parsing token ~s: ~p (~p)", [String, _Type, _Line]),
+            % lager:log(debug, self(), "Error parsing token ~s: ~p (~p)", [String, _Type, _Line]),
             error;
         {Name, Opts, []} when Acc==[]-> 
             [{Name, Opts}];

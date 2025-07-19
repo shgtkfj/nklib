@@ -484,7 +484,7 @@ parse_fun_res(Res, Key, Val, Parse) ->
         {error, Error} ->
             {error, Error};
         {'EXIT', Error} ->
-            lager:warning("NkLIB Syntax: error calling syntax fun for "
+            lager:log(warning, self(), "NkLIB Syntax: error calling syntax fun for "
                           "(~s, ~p) ~p", [Key, Val, Error]),
             error(fun_call_error);
         false ->
@@ -620,11 +620,11 @@ spec({atom_or_binary, List}, Val) when is_list(List) ->
 
 %% Luerl-style lists
 %%spec(list, [{1, _}|_]=Val) ->
-%%    lager:error("NKLOG VV0 ~p", [Val]),
+%%    lager:log(error, self(), "NKLOG VV0 ~p", [Val]),
 %%    spec(list, [V || {_, V} <- Val]);
 %%
 %%spec(list, Val) ->
-%%    lager:error("NKLOG VV ~p", [Val]),
+%%    lager:log(error, self(), "NKLOG VV ~p", [Val]),
 %%    case is_list(Val) of
 %%        true -> {ok, Val};
 %%        false -> error
@@ -1207,7 +1207,7 @@ path_key(Key, #parse{path = Path}) ->
 
 %% @private
 list_to_map(List) ->
-    % lager:error("List: ~p", [List]),
+    % lager:log(error, self(), "List: ~p", [List]),
     list_to_map(List, []).
 
 

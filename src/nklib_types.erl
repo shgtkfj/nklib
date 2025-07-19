@@ -160,16 +160,16 @@ handle_call({update_meta, Class, Type, Fun}, _From, State) ->
             ets:insert(?MODULE, {{meta, Class, Type}, Meta2}),
             {reply, ok, State};
         Other ->
-            lager:warning("NkLIB Types: invalid meta respose (~p ~p): ~p", [Class, Type, Other]),
+            lager:log(warning, self(), "NkLIB Types: invalid meta respose (~p ~p): ~p", [Class, Type, Other]),
             {reply, {error, function_error, State}}
     catch
         error:Error ->
-            lager:warning("NkLIB Types: invalid meta respose (~p ~p): ~p", [Class, Type, Error]),
+            lager:log(warning, self(), "NkLIB Types: invalid meta respose (~p ~p): ~p", [Class, Type, Error]),
             {reply, {error, function_error, State}}
     end;
 
 handle_call(Msg, _From, State) ->
-    lager:error("Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -178,7 +178,7 @@ handle_call(Msg, _From, State) ->
     {noreply, #state{}} | {stop, term(), #state{}}.
 
 handle_cast(Msg, State) ->
-    lager:error("Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -187,7 +187,7 @@ handle_cast(Msg, State) ->
     {noreply, #state{}} | {stop, term(), #state{}}.
 
 handle_info(Info, State) ->
-    lager:warning("Module ~p received unexpected info: ~p (~p)", [?MODULE, Info, State]),
+    lager:log(warning, self(), "Module ~p received unexpected info: ~p (~p)", [?MODULE, Info, State]),
     {noreply, State}.
 
 

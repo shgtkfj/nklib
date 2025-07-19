@@ -99,7 +99,7 @@ get(SrvId, Key, List, Lang) when is_list(List) ->
         Msg ->
             case catch io_lib:format(nklib_util:to_list(Msg), List) of
                 {'EXIT', _} ->
-                    lager:notice("Invalid format in i18n: ~s, ~p", [Msg, List]),
+                    lager:log(notice, self(), "Invalid format in i18n: ~s, ~p", [Msg, List]),
                     <<>>;
                 Val ->
                     list_to_binary(Val)
@@ -172,7 +172,7 @@ init([]) ->
     {noreply, #state{}}.
 
 handle_call(Msg, _From, State) ->
-    lager:error("Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -186,7 +186,7 @@ handle_cast({insert, SrvId, Keys, Lang}, State) ->
     {noreply, State};
 
 handle_cast(Msg, State) ->
-    lager:error("Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -195,7 +195,7 @@ handle_cast(Msg, State) ->
     {noreply, #state{}}.
 
 handle_info(Info, State) -> 
-    lager:warning("Module ~p received unexpected info: ~p", [?MODULE, Info]),
+    lager:log(warning, self(), "Module ~p received unexpected info: ~p", [?MODULE, Info]),
     {noreply, State}.
 
 

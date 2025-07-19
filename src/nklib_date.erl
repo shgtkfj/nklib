@@ -462,7 +462,7 @@ gmt_to_local_3339(DateGmt, TZ) ->
 
 
 local_to_gmt_calendar(DateLocal, TZ) ->
-    %lager:error("NKLOG DL ~p", [DateLocal]),
+    %lager:log(error, self(), "NKLOG DL ~p", [DateLocal]),
     case to_calendar(DateLocal) of
         {ok, Cal} ->
             qdate_srv:set_timezone(TZ),
@@ -595,7 +595,7 @@ dates_test() ->
     {ok, <<"1980-01-01T00:00:00.001000Z">>} = to_3339("1980-01-01T00:00:00.001Z", msecs),
     {ok, <<"1980-01-01T00:00:00.000001Z">>} = to_3339("1980-01-01T00:00:00.000001Z", usecs),
 
-    {true,{{{2015,6,30},{23,59,10}},0.0,secs}} = is_3339("2015-06-30T23:59:10Z"),
+    {true,{{{2015,6,30},{23,59,10}},+0.0,secs}} = is_3339("2015-06-30T23:59:10Z"),
     false = is_3339("2015-06-30T23:59:10"),
     {true,{{{2015,6,30},{23,59,10}},0.1,msecs}} = is_3339("2015-06-30T23:59:10.1Z"),
     {true,{{{2015,6,30},{23,59,10}},0.01,msecs}} = is_3339("2015-06-30T23:59:10.01Z"),

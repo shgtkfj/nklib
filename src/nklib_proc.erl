@@ -335,7 +335,7 @@ handle_call(stop, _From, State) ->
     {stop, normal, ok, State};
 
 handle_call(Msg, _From, State) ->
-    lager:error("Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -356,7 +356,7 @@ handle_cast({del_all, Pid}, State) ->
     {noreply, State};
 
 handle_cast(Msg, State) ->
-    lager:error("Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -369,7 +369,7 @@ handle_info({'EXIT', Pid, _Reason}, State) ->
     {noreply, State};
 
 handle_info(Info, State) -> 
-    lager:warning("Module ~p received unexpected cast ~p", [?MODULE, Info]),
+    lager:log(warning, self(), "Module ~p received unexpected cast ~p", [?MODULE, Info]),
     {noreply, State}.
 
 
@@ -584,7 +584,7 @@ start(Type, Link, Name, Module, Args) ->
             receive 
                 {Ref, Result} -> Result
             after 60000 -> 
-                lager:error("Timeout when creating process ~p", [Name]),
+                lager:log(error, self(), "Timeout when creating process ~p", [Name]),
                 exit(Pid, kill),
                 {error, timeout}
             end;

@@ -161,7 +161,7 @@ start_link(Cmd, Opts) ->
 init([Cmd, #{pid:=UserPid}=Opts]) ->
     process_flag(trap_exit, true),
     nklib_proc:put(?MODULE, {Cmd, UserPid}),
-    lager:debug("nklib_exec cmd: ~s", [Cmd]),
+    lager:log(debug, self(), "nklib_exec cmd: ~s", [Cmd]),
     Helper = case code:priv_dir(nklib) of
         {error, _} -> error(no_priv_dir);
         Base -> Base ++ "/nklib_launcher "
@@ -189,7 +189,7 @@ handle_call(get_state, _From, State) ->
     {reply, State, State};
 
 handle_call(Msg, _From, State) -> 
-    lager:error("Module ~p received unexpected call ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected call ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -208,7 +208,7 @@ handle_cast(error, _State) ->
     error(a);
 
 handle_cast(Msg, State) -> 
-    lager:error("Module ~p received unexpected cast ~p", [?MODULE, Msg]),
+    lager:log(error, self(), "Module ~p received unexpected cast ~p", [?MODULE, Msg]),
     {noreply, State}.
 
 
@@ -245,7 +245,7 @@ handle_info(timeout, State) ->
     do_stop(timeout, State);
 
 handle_info(Info, State) -> 
-    lager:warning("Module ~p received unexpected info: ~p", [?MODULE, Info]),
+    lager:log(warning, self(), "Module ~p received unexpected info: ~p", [?MODULE, Info]),
     {noreply, State}.
 
 
@@ -321,7 +321,7 @@ restart_timer(#state{timeout_time=Time, timeout_ref=Ref}=State) ->
 
 %% @private
 send_user_msg(Msg, #state{cmd=Cmd, user_pid=Pid}) ->
-    lager:debug("nklib_exec ~s sending msg: ~p", [Cmd, Msg]),
+    lager:log(debug, self(), "nklib_exec ~s sending msg: ~p", [Cmd, Msg]),
     Pid ! {?MODULE, self(), Msg}.
 
 
@@ -338,7 +338,7 @@ stop_os_cmd(#state{cmd=Cmd, port=Port, os_pid=OsPid, kill_time=KillTime}) ->
     case is_integer(KillTime) of
         true ->
             timer:sleep(KillTime),
-            lager:debug("nklib_exec ~s sending kill", [Cmd]),
+            lager:log(debug, self(), "nklib_exec ~s sending kill", [Cmd]),
             os:cmd("kill -9 " ++ integer_to_list(OsPid));
         false ->
             ok
@@ -349,7 +349,7 @@ stop_os_cmd(#state{cmd=Cmd, port=Port, os_pid=OsPid, kill_time=KillTime}) ->
 do_parse(<<"nklib_pid:", Rest/binary>>, #state{cmd=Cmd}=State) ->
     {ok, OsPid, <<"\n", Rest2/binary>>} = extract_number(Rest, []),
     State1 = State#state{os_pid=OsPid},
-    lager:debug("nklib_exec OS PID for ~s is ~p", [Cmd, OsPid]),
+    lager:log(debug, self(), "nklib_exec OS PID for ~s is ~p", [Cmd, OsPid]),
     send_user_msg({start, OsPid}, State),
     case Rest2 of
         <<>> -> {noreply, State1};

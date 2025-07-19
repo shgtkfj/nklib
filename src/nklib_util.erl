@@ -610,7 +610,7 @@ make_atom(Id, Term) ->
     Term2 = to_binary(Term),
     case catch binary_to_existing_atom(Term2, utf8) of
         {'EXIT', _} ->
-            lager:warning("NkLIB id '~p' created atom '~s'", [Id, Term2]),
+            lager:log(warning, self(), "NkLIB id '~p' created atom '~s'", [Id, Term2]),
             binary_to_atom(Term2, utf8);
         Atom ->
             Atom
@@ -1142,7 +1142,7 @@ demonitor(_) ->
 msg(Msg, Vars) ->
     case catch list_to_binary(io_lib:format(Msg, Vars)) of
         {'EXIT', _} ->
-            lager:warning("MSG PARSE ERROR: ~p, ~p", [Msg, Vars]),
+            lager:log(warning, self(), "MSG PARSE ERROR: ~p, ~p", [Msg, Vars]),
             <<"Msg parser error">>;
         Result ->
             Result
